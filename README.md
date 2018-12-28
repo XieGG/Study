@@ -1,77 +1,61 @@
-Symfony Standard Edition
-========================
+## Symfony 学习
+######学习版本 Symfony3.4
 
-**WARNING**: This distribution does not support Symfony 4. See the
-[Installing & Setting up the Symfony Framework][15] page to find a replacement
-that fits you best.
 
-Welcome to the Symfony Standard Edition - a fully-functional Symfony
-application that you can use as the skeleton for your new applications.
+### 关于项目初始化
+由于vendor文件夹不再加入到仓库中，项目clone下来后，需要执行如下命令，安装第三方包
 
-For details on how to download and get started with Symfony, see the
-[Installation][1] chapter of the Symfony Documentation.
+	composer install
+若安装被墙或者很慢，更换中国镜像，执行如下命令，修改仓库源地址
 
-What's inside?
---------------
+	composer config -g repo.packagist composer https://packagist.phpcomposer.com
+详情请阅读: [https://pkg.phpcomposer.com](https://pkg.phpcomposer.com/)
+### 关于配置文件parameters.yml
+	由于项目是多数据库，数据库配置文件需要复制parameters.yml.dist到parameters.yml，然后修改数据库密码即可
+	[数据库多库官方文档](https://symfony.com/doc/3.4/doctrine/multiple_entity_managers.html)
+### 关于新增bundle(symfony v3.3 做了优化)
+生成新的bundle后，需要手动修改composer.json文件
 
-The Symfony Standard Edition is configured with the following defaults:
+	"autoload": {
+        "psr-4": {
+            "AppBundle\\": "src/AppBundle",
+            "AdminBundle\\": "src/AdminBundle",
+            "MobileBundle\\": "src/MobileBundle",
+            "ErpBundle\\": "src/ErpBundle",
+            "RbacBundle\\": "src/RbacBundle"
+        },
+        "classmap": [ "app/AppKernel.php", "app/AppCache.php" ]
+    },
+	
+修改psr-4配置项，加入bundle配置如
+	
+	"RbacBundle\\": "src/RbacBundle"
+然后执行如下命令，更新composer自动加载文件
+	
+	composer dump-autoload
+### 关于生成项目后台管理员账号
+	
+	$ php bin/console admin:user:generate -u admin -p lcp0578
+	generate account username:admin, password:lcp0578?(enter yes|no)yes
+	generate success
+	
+	
+### 关于entity类型
+- 需要写注释
+- 字段类型，需要考虑清楚，不能全部写成varchar(255)
+### 关于路由名称
+示例：admin_user_index，对应路由为/admin/user 或者 /admin/user/index,有时，路由为了权限控制，需要加前缀，例如/admin
 
-  * An AppBundle you can use to start coding;
-
-  * Twig as the only configured template engine;
-
-  * Doctrine ORM/DBAL;
-
-  * Swiftmailer;
-
-  * Annotations enabled for everything.
-
-It comes pre-configured with the following bundles:
-
-  * **FrameworkBundle** - The core Symfony framework bundle
-
-  * [**SensioFrameworkExtraBundle**][6] - Adds several enhancements, including
-    template and routing annotation capability
-
-  * [**DoctrineBundle**][7] - Adds support for the Doctrine ORM
-
-  * [**TwigBundle**][8] - Adds support for the Twig templating engine
-
-  * [**SecurityBundle**][9] - Adds security by integrating Symfony's security
-    component
-
-  * [**SwiftmailerBundle**][10] - Adds support for Swiftmailer, a library for
-    sending emails
-
-  * [**MonologBundle**][11] - Adds support for Monolog, a logging library
-
-  * **WebProfilerBundle** (in dev/test env) - Adds profiling functionality and
-    the web debug toolbar
-
-  * **SensioDistributionBundle** (in dev/test env) - Adds functionality for
-    configuring and working with Symfony distributions
-
-  * [**SensioGeneratorBundle**][13] (in dev env) - Adds code generation
-    capabilities
-
-  * [**WebServerBundle**][14] (in dev env) - Adds commands for running applications
-    using the PHP built-in web server
-
-  * **DebugBundle** (in dev/test env) - Adds Debug and VarDumper component
-    integration
-
-All libraries and bundles included in the Symfony Standard Edition are
-released under the MIT or BSD license.
-
-Enjoy!
-
-[1]:  https://symfony.com/doc/3.4/setup.html
-[6]:  https://symfony.com/doc/current/bundles/SensioFrameworkExtraBundle/index.html
-[7]:  https://symfony.com/doc/3.4/doctrine.html
-[8]:  https://symfony.com/doc/3.4/templating.html
-[9]:  https://symfony.com/doc/3.4/security.html
-[10]: https://symfony.com/doc/3.4/email.html
-[11]: https://symfony.com/doc/3.4/logging.html
-[13]: https://symfony.com/doc/current/bundles/SensioGeneratorBundle/index.html
-[14]: https://symfony.com/doc/current/setup/built_in_web_server.html
-[15]: https://symfony.com/doc/current/setup.html
+- admin为bundle名称
+- user为控制器名称
+- index方法名称
+### 关于控制器方法名称
+遵循 `php bin/console doctrine:generate:crud` 命令生成的对应的方法名称
+  
+- indexAction() 列表页
+- newAction() 新增
+- showAction() 详情页
+- editAction() 编辑
+- deleteAction() 删除
+其他方法，自己按功能进行定义（禁止使用拼音）  
+模板名称和方法名称对应
