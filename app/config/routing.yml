@@ -1,0 +1,17 @@
+study:
+    resource: "@StudyBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
+admin:
+    resource: "@AdminBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
+api:
+    resource: "@ApiBundle/Resources/config/routing.yml"
+    prefix:   /api
+
+app:
+    resource: '@AppBundle/Controller/'
+    type: annotation
